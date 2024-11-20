@@ -1,5 +1,6 @@
 import axios from "axios";
-import ImageService from "../ImageService";
+import ImageService from "@/data/service/ImageService";
+import ImageDTO from "@/data/models/ImageDTO";
 
 jest.mock("axios");
 test("getImageOnDate", async () => {
@@ -16,6 +17,7 @@ test("getImageOnDate", async () => {
         }
     };
     axios.get = jest.fn().mockResolvedValue(response);
-    const result = await ImageService.getImageOnDate(new Date("2024-11-19"));
-    expect(result).toEqual(response.data);
+    const result: ImageDTO = await ImageService.getInstance().getImageOnDate(new Date("2024-11-19"));
+    const imageDTO = new ImageDTO("test", "2024-11-19", "test", "test", "test", "test", "test", "test");
+    expect(result).toEqual(imageDTO);
 });

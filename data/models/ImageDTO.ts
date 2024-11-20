@@ -1,6 +1,6 @@
 export default class ImageDTO {
     copyright: string;
-    date: Date;
+    date: string;
     explanation: string;
     hdurl: string;
     media_type: string;
@@ -8,7 +8,7 @@ export default class ImageDTO {
     title: string;
     url: string;
 
-    constructor(copyright: string, date: Date, explanation: string, hdurl: string, media_type: string, service_version: string, title: string, url: string) {
+    constructor(copyright: string, date: string, explanation: string, hdurl: string, media_type: string, service_version: string, title: string, url: string) {
         this.copyright = copyright;
         this.date = date;
         this.explanation = explanation;
