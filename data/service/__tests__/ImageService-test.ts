@@ -13,11 +13,22 @@ test("getImageOnDate", async () => {
             media_type: "test",
             service_version: "test",
             title: "test",
-            url: "test"
-        }
+            url: "test",
+        },
     };
     axios.get = jest.fn().mockResolvedValue(response);
-    const result: ImageDTO = await ImageService.getInstance().getImageOnDate(new Date("2024-11-19"));
-    const imageDTO = new ImageDTO("test", "2024-11-19", "test", "test", "test", "test", "test", "test");
+    const result: ImageDTO = await ImageService.instance.getImageOnDate(
+        new Date("2024-11-19")
+    );
+    const imageDTO = new ImageDTO(
+        "test",
+        "2024-11-19",
+        "test",
+        "test",
+        "test",
+        "test",
+        "test",
+        "test"
+    );
     expect(result).toEqual(imageDTO);
 });
