@@ -11,7 +11,7 @@ const ImageDetails = ({ image }: { image: Image }) => {
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>{image.title}</Text>
-            <RNImage source={{ uri: image.url }} style={styles.image} />
+            <RNImage source={{ uri: image.url }} style={styles.image} loadingIndicatorSource={require('@/assets/loading.gif')} />
             <Text style={styles.date}>Date: {image.date.toDateString()}</Text>
             <Text style={styles.explanation}>{image.explanation}</Text>
             <Text style={styles.copyright}>Copyright: {image.copyright || 'N/A'}</Text>

@@ -6,7 +6,7 @@ export default class GetImageUseCase {
 
     constructor(service: ImageService|null) {
         if (service === null) {
-            this.service = ImageService.getInstance();
+            this.service = ImageService.instance;
         } else {
             this.service = service;
         }

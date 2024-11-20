@@ -16,8 +16,24 @@ export default class ImageService {
     }
 
     async getImageOnDate(date: Date): Promise<ImageDTO> {
+        const now = new Date();
+        if (
+            now.getFullYear() === date.getFullYear() &&
+            now.getMonth() === date.getMonth() &&
+            now.getDate() === date.getDate()
+        ) {
+            return this.getNewestImage();
+        }
         const response = await axios.get<ImageDTO>(url, {
             params: { api_key: apiKey, date: DateFormatter.formatDate(date) },
+            transformResponse: (data) => JSON.parse(data),
+        });
+        return response.data;
+    }
+
+    async getNewestImage(): Promise<ImageDTO> {
+        const response = await axios.get<ImageDTO>(url, {
+            params: { api_key: apiKey },
             transformResponse: (data) => JSON.parse(data),
         });
         return response.data;
