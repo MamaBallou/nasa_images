@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
     View,
-    Text,
     FlatList,
-    ActivityIndicator,
     TouchableOpacity,
     Image as RNImage,
     StyleSheet,
 } from "react-native";
+import { Text, ActivityIndicator, useTheme } from "react-native-paper";
 import GetImagesOnDateRange from "@/domain/use_case/GetImageOnDateRange";
 import ImageService from "@/data/service/ImageService";
 import Image from "@/domain/model/Image";
@@ -15,6 +14,7 @@ import { useRouter } from "expo-router";
 import DateFormatter from "@/utils/DateFormatter";
 
 export default function ImageList() {
+    const theme = useTheme();
     const [images, setImages] = useState<Image[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -68,7 +68,12 @@ export default function ImageList() {
     );
 
     return (
-        <View>
+        <View
+            style={{
+                ...styles.container,
+                backgroundColor: theme.colors.background,
+            }}
+        >
             <FlatList
                 data={images}
                 renderItem={renderItem}
@@ -77,11 +82,23 @@ export default function ImageList() {
                 onEndReachedThreshold={0.5}
                 ListFooterComponent={
                     error ? (
-                        <View style={styles.errorContainer}>
+                        <View
+                            style={{
+                                ...styles.errorContainer,
+                                backgroundColor: theme.colors.background,
+                            }}
+                        >
                             <Text style={styles.errorText}>{error}</Text>
                         </View>
                     ) : loading ? (
-                        <ActivityIndicator />
+                        <View
+                            style={{
+                                ...styles.loadingContainer,
+                                backgroundColor: theme.colors.background,
+                            }}
+                        >
+                            <ActivityIndicator />
+                        </View>
                     ) : null
                 }
             />
@@ -91,6 +108,7 @@ export default function ImageList() {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         padding: 10,
     },
     image: {
@@ -109,5 +127,10 @@ const styles = StyleSheet.create({
     errorText: {
         fontSize: 18,
         color: "red",
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

@@ -1,16 +1,19 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useTheme } from 'react-native-paper';
 
 export default function TabLayout() {
+    
+    const theme = useTheme();
     return (
-        <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
+        <Tabs screenOptions={{ tabBarActiveTintColor: theme.colors.onSurface, tabBarInactiveTintColor: theme.colors.onSurfaceDisabled, tabBarActiveBackgroundColor: theme.colors.inversePrimary, tabBarInactiveBackgroundColor: theme.colors.background, headerTintColor: theme.colors.onBackground, headerStyle: { backgroundColor: theme.colors.background }}}>
           <Tabs.Screen
             name="index"
             options={{
               title: 'Home',
-              tabBarIcon: ({ color }) => <MaterialIcons name="home" size={28} color={color} />,
+              tabBarIcon: ({ color }) => <MaterialIcons name="home" size={28} color={color}
+               />,
             }}
           />
           <Tabs.Screen

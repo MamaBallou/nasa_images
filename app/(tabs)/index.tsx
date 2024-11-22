@@ -1,12 +1,14 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Text, ActivityIndicator, useTheme } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import GetImageUseCase from "@/domain/use_case/GetImageUseCase";
 import ImageService from "@/data/service/ImageService";
 import Image from "@/domain/model/Image";
-import ImageDetails from "../component/image-component";
+import ImageDetails from "@/app/component/image-component";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+    const theme = useTheme();
     const [image, setImage] = useState<Image | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,12 @@ export default function HomeScreen() {
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
+            <View
+                style={{
+                    ...styles.loadingContainer,
+                    backgroundColor: theme.colors.background,
+                }}
+            >
                 <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
@@ -38,7 +45,12 @@ export default function HomeScreen() {
 
     if (error) {
         return (
-            <View style={styles.errorContainer}>
+            <View
+                style={{
+                    ...styles.errorContainer,
+                    backgroundColor: theme.colors.background,
+                }}
+            >
                 <Text style={styles.errorText}>Error loading image data</Text>
             </View>
         );
@@ -46,8 +58,19 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-                <View style={styles.container}>
+            <SafeAreaView
+                style={{
+                    ...styles.container,
+                    backgroundColor: theme.colors.background,
+                }}
+                edges={["top", "bottom"]}
+            >
+                <View
+                    style={{
+                        ...styles.container,
+                        backgroundColor: theme.colors.background,
+                    }}
+                >
                     <ImageDetails image={image!} />
                 </View>
             </SafeAreaView>
