@@ -9,7 +9,6 @@ describe("GetImageUseCase", () => {
         const mockGetImageOnDate = jest
             .spyOn(ImageService.prototype, "getImageOnDate")
             .mockImplementation(async (date) => {
-                console.log("mocked getImageOnDate");
                 return new ImageDTO(
                     "test",
                     "2024-11-19",

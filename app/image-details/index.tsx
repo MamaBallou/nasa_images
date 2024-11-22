@@ -1,12 +1,15 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
+import { View, StyleSheet, ActivityIndicator, Text } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import ImageComponent from "@/app/component/image-component"; // Adjust the import path as necessary
+import Image from "@/domain/model/Image"; // Adjust the import path as necessary
 import GetImageUseCase from "@/domain/use_case/GetImageUseCase";
 import ImageService from "@/data/service/ImageService";
-import Image from "@/domain/model/Image";
-import ImageDetails from "../component/image-component";
-import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-export default function HomeScreen() {
+export default function Route() {
+    const { date } = useLocalSearchParams<{ date: string }>();
+
     const [image, setImage] = useState<Image | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -16,7 +19,7 @@ export default function HomeScreen() {
             try {
                 const imageData = await new GetImageUseCase(
                     ImageService.instance
-                ).execute(new Date());
+                ).execute(new Date(date));
                 setImage(imageData);
             } catch (err) {
                 setError("Error loading image data");
@@ -48,7 +51,7 @@ export default function HomeScreen() {
         <SafeAreaProvider>
             <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
                 <View style={styles.container}>
-                    <ImageDetails image={image!} />
+                    <ImageComponent image={image!} />
                 </View>
             </SafeAreaView>
         </SafeAreaProvider>
