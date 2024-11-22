@@ -1,7 +1,14 @@
 import React from "react";
-import { Text, Button, useTheme } from "react-native-paper";
+import { Text, Button, useTheme, IconButton } from "react-native-paper";
 import Image from "@/domain/model/Image";
-import { ScrollView, Image as RNImage, StyleSheet, Share } from "react-native";
+import {
+    ScrollView,
+    Image as RNImage,
+    StyleSheet,
+    Share,
+    View,
+    Linking,
+} from "react-native";
 
 const ImageDetails = ({ image }: { image: Image }) => {
     const theme = useTheme();
@@ -12,9 +19,9 @@ const ImageDetails = ({ image }: { image: Image }) => {
     const onShare = async () => {
         try {
             const result = await Share.share({
-                message: `Check out this image: ${
+                message: `Check out this image from NASA:\n\n${
                     image.title
-                }\nDate: ${image.date.toDateString()}\nExplanation: ${
+                }\nDate: ${image.date.toDateString()}\n\nExplanation: ${
                     image.explanation
                 }\nHD URL: ${image.hdurl}`,
                 url: image.url,
@@ -35,37 +42,79 @@ const ImageDetails = ({ image }: { image: Image }) => {
     };
 
     return (
-        <ScrollView style={{ ...styles.container, backgroundColor: theme.colors.background }}>
-            <Text style={styles.title}>{image.title}</Text>
+        <ScrollView
+            style={{
+                ...styles.container,
+                backgroundColor: theme.colors.background,
+            }}
+        >
+            <View style={styles.header}>
+                <Text selectable style={styles.title}>
+                    {image.title}
+                </Text>
+                <IconButton
+                    icon="share"
+                    size={30}
+                    onPress={onShare}
+                    iconColor={theme.colors.primary}
+                />
+            </View>
+
             <RNImage
                 source={{ uri: image.url }}
                 style={styles.image}
                 loadingIndicatorSource={require("@/assets/loading.gif")}
             />
-            <Text style={styles.date}>Date: {image.date.toDateString()}</Text>
-            <Text style={styles.explanation}>{image.explanation}</Text>
-            <Text style={styles.copyright}>
-                Copyright: {image.copyright || "N/A"}
+            <View style={{ flexDirection: "row" }}>
+                <Text selectable style={{ ...styles.date, fontWeight: "bold" }}>
+                    Date:{" "}
+                </Text>
+                <Text selectable style={styles.date}>
+                    {image.date.toDateString()}
+                </Text>
+            </View>
+            <Text selectable style={styles.explanation}>
+                {image.explanation}
             </Text>
-            <Text style={styles.mediaType}>Media Type: {image.media_type}</Text>
-            <Text style={styles.serviceVersion}>
-                Service Version: {image.service_version}
-            </Text>
-            <Text style={styles.hdurl}>HD URL: {image.hdurl}</Text>
-            <Button onPress={onShare}>Share</Button>
+            <View>
+                <Text selectable style={styles.copyright}>
+                    Copyright: {image.copyright.trim() || "N/A"}
+                </Text>
+                <Text selectable style={styles.mediaType}>
+                    Media Type: {image.media_type}
+                </Text>
+                <Text style={styles.serviceVersion}>
+                    Service Version: {image.service_version}
+                </Text>
+                <Text
+                    selectable
+                    style={styles.hdurl}
+                    onPress={() => Linking.openURL(image.hdurl)}
+                >
+                    HD URL:{" "}
+                    <Text style={{ color: theme.colors.primary }}>
+                        {image.hdurl}
+                    </Text>
+                </Text>
+            </View>
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
         backgroundColor: "#fff",
+        paddingHorizontal: 10,
+    },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 10,
     },
     title: {
         fontSize: 24,
         fontWeight: "bold",
-        marginBottom: 10,
     },
     image: {
         width: "100%",
@@ -81,20 +130,17 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     copyright: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 12,
     },
     mediaType: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 12,
     },
     serviceVersion: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 12,
     },
     hdurl: {
-        fontSize: 16,
-        marginBottom: 10,
+        fontSize: 12,
+        marginBottom: 15,
     },
 });
 

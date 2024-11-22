@@ -57,13 +57,17 @@ export default function HomeScreen() {
     }
 
     return (
-        <SafeAreaProvider>
+        <SafeAreaProvider
+            style={{
+                ...styles.container,
+                backgroundColor: theme.colors.background,
+            }}
+        >
             <SafeAreaView
                 style={{
                     ...styles.container,
                     backgroundColor: theme.colors.background,
                 }}
-                edges={["top", "bottom"]}
             >
                 <View
                     style={{
