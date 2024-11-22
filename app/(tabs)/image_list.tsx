@@ -57,13 +57,19 @@ export default function ImageList() {
     const handleImagePress = (image: Image) => {
         router.push({
             pathname: "/image-details",
-            params: { date: image.date.toISOString()},
+            params: { date: image.date.toISOString() },
         });
     };
 
     const renderItem = ({ item }: { item: Image }) => (
-        <TouchableOpacity onPress={() => handleImagePress(item)}>
+        <TouchableOpacity
+            onPress={() => handleImagePress(item)}
+            style={styles.imageContainer}
+        >
             <RNImage source={{ uri: item.url }} style={styles.image} />
+            <View style={styles.dateOverlay}>
+                <Text style={styles.dateText}>{item.date.toDateString()}</Text>
+            </View>
         </TouchableOpacity>
     );
 
@@ -132,5 +138,20 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    imageContainer: {
+        position: "relative",
+    },
+    dateOverlay: {
+        position: "absolute",
+        bottom: 10,
+        left: 10,
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // Transparent background
+        padding: 5,
+        borderRadius: 5,
+    },
+    dateText: {
+        color: "white",
+        fontSize: 14,
     },
 });
