@@ -60,7 +60,7 @@ export default function Route() {
     }
 
     return (
-        <SafeAreaProvider>
+        <SafeAreaProvider style={{ flex: 1, flexGrow: 1 }}>
             <SafeAreaView
                 style={{
                     ...styles.container,
