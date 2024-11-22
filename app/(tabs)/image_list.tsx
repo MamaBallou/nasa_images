@@ -57,7 +57,7 @@ export default function ImageList() {
     const handleImagePress = (image: Image) => {
         router.push({
             pathname: "/image-details",
-            params: { date: image.date.toISOString() },
+            params: { date: image.date.toISOString()},
         });
     };
 
