@@ -201,12 +201,15 @@ export default function ImageList() {
                 backgroundColor: theme.colors.background,
             }}
         >
-            <Switch
-                value={filterImage}
-                onValueChange={(value) => {
-                    setFilterImage(value);
-                }}
-            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text>Filter by date:</Text>
+                <Switch
+                    value={filterImage}
+                    onValueChange={(value) => {
+                        setFilterImage(value);
+                    }}
+                />
+            </View>
             {filterImage && <DatePickers />}
             <FlatList
                 data={images}
