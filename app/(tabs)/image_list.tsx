@@ -23,7 +23,6 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { MIN_DATE } from "@/constants/date-range";
 
-
 var endDate = new Date();
 var startDate = new Date(endDate);
 startDate.setMonth(startDate.getMonth() - 1);
@@ -42,8 +41,6 @@ export default function ImageList() {
     const router = useRouter();
 
     const getImages = async () => {
-        console.log("getImages");
-        console.log(startDate, endDate);
         if (!stillImagesToLoad) {
             return;
         }
@@ -68,8 +65,17 @@ export default function ImageList() {
     };
 
     const reloadImages = () => {
-        console.log("Reloading images");
         setImages([]); // Reset the images array
+        if (!filterImage) {
+            minDate.setDate(MIN_DATE.getDate());
+            minDate.setMonth(MIN_DATE.getMonth());
+            minDate.setFullYear(MIN_DATE.getFullYear());
+            setMinDate(minDate);
+            maxDate.setDate(new Date().getDate());
+            maxDate.setMonth(new Date().getMonth());
+            maxDate.setFullYear(new Date().getFullYear());
+            setMaxDate(maxDate);
+        }
         endDate = new Date(maxDate);
         startDate = new Date(maxDate);
         startDate.setMonth(startDate.getMonth() - 1);
@@ -82,18 +88,21 @@ export default function ImageList() {
 
     useEffect(() => {
         reloadImages();
-    }, []);
+    }, [filterImage]);
 
     const handleLoadMore = () => {
         if (loading) return;
-        console.log("handleLoadMore");
-        console.log(startDate, endDate);
+        if (!stillImagesToLoad) return;
+
         endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() - 1);
 
         startDate = new Date(endDate);
         startDate.setMonth(startDate.getMonth() - 1);
-        console.log(startDate, endDate);
+
+        if (startDate < minDate) {
+            startDate = new Date(minDate);
+        }
 
         getImages();
     };
@@ -116,6 +125,9 @@ export default function ImageList() {
         if (currentDate > maxDate) {
             setMaxDate(currentDate);
         }
+        minDate.setDate(currentDate.getDate());
+        minDate.setMonth(currentDate.getMonth());
+        minDate.setFullYear(currentDate.getFullYear());
         setMinDate(currentDate);
         setShowStartDatePicker(false);
         reloadImages();
@@ -192,9 +204,7 @@ export default function ImageList() {
             <Switch
                 value={filterImage}
                 onValueChange={(value) => {
-                    console.log(value);
                     setFilterImage(value);
-                    reloadImages();
                 }}
             />
             {filterImage && <DatePickers />}
