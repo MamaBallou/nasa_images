@@ -23,14 +23,15 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { MIN_DATE } from "@/constants/date-range";
 
+
+var endDate = new Date();
+var startDate = new Date(endDate);
+startDate.setMonth(startDate.getMonth() - 1);
 export default function ImageList() {
     const theme = useTheme();
     const [images, setImages] = useState<Image[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    var endDate = new Date();
-    var startDate = new Date(endDate);
-    startDate.setMonth(startDate.getMonth() - 1);
     const [filterImage, setFilterImage] = useState<boolean>(false);
     const [minDate, setMinDate] = useState<Date>(MIN_DATE);
     const [maxDate, setMaxDate] = useState<Date>(new Date());
@@ -86,11 +87,13 @@ export default function ImageList() {
     const handleLoadMore = () => {
         if (loading) return;
         console.log("handleLoadMore");
+        console.log(startDate, endDate);
         endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() - 1);
 
         startDate = new Date(endDate);
         startDate.setMonth(startDate.getMonth() - 1);
+        console.log(startDate, endDate);
 
         getImages();
     };
