@@ -24,7 +24,7 @@ const ImageDetails = ({ image }: { image: Image }) => {
                     image.title
                 }\nDate: ${image.date.toDateString()}\n\nExplanation: ${
                     image.explanation
-                }\nHD URL: ${image.hdurl}`,
+                }\nurl: ${image.url}\nHD URL: ${image.hdurl}`,
                 url: image.url,
             });
 
