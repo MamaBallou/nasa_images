@@ -9,6 +9,7 @@ import {
     View,
     Linking,
 } from "react-native";
+import { WebView } from "react-native-webview";
 
 const ImageDetails = ({ image }: { image: Image }) => {
     const theme = useTheme();
@@ -60,11 +61,12 @@ const ImageDetails = ({ image }: { image: Image }) => {
                 />
             </View>
 
-            <RNImage
-                source={{ uri: image.url }}
-                style={styles.image}
-                loadingIndicatorSource={require("@/assets/loading.gif")}
-            />
+            {image.media_type === "image" ? (
+                <RNImage source={{ uri: image.url }} style={styles.image} />
+            ) : image.media_type === "video" ? (
+                <WebView source={{ uri: image.url }} style={styles.image} />
+            ) : null}
+
             <View style={{ flexDirection: "row" }}>
                 <Text selectable style={{ ...styles.date, fontWeight: "bold" }}>
                     Date:{" "}

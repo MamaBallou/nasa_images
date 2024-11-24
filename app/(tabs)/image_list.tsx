@@ -22,6 +22,7 @@ import DateTimePicker, {
     DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { MIN_DATE } from "@/constants/date-range";
+import WebView from "react-native-webview";
 
 var endDate = new Date();
 var startDate = new Date(endDate);
@@ -187,7 +188,18 @@ export default function ImageList() {
             onPress={() => handleImagePress(item)}
             style={styles.imageContainer}
         >
-            <RNImage source={{ uri: item.url }} style={styles.image} />
+            {item.media_type == "image" ? (
+                <RNImage source={{ uri: item.url }} style={styles.image} />
+            ) : item.media_type == "video" ? (
+                <WebView
+                    source={{ uri: item.url }}
+                    style={styles.image}
+                    mediaPlaybackRequiresUserAction={false}
+                />
+            ) : (
+                <Text>Unknown media type</Text>
+            )}
+
             <View style={styles.dateOverlay}>
                 <Text style={styles.dateText}>{item.date.toDateString()}</Text>
             </View>
