@@ -6,26 +6,46 @@ import {
     Image as RNImage,
     StyleSheet,
 } from "react-native";
-import { Text, ActivityIndicator, useTheme } from "react-native-paper";
+import {
+    Text,
+    ActivityIndicator,
+    useTheme,
+    Switch,
+    Button,
+} from "react-native-paper";
 import GetImagesOnDateRange from "@/domain/use_case/GetImageOnDateRange";
 import ImageService from "@/data/service/ImageService";
 import Image from "@/domain/model/Image";
 import { useRouter } from "expo-router";
 import DateFormatter from "@/utils/DateFormatter";
+import DateTimePicker, {
+    DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { MIN_DATE } from "@/constants/date-range";
 
 export default function ImageList() {
     const theme = useTheme();
     const [images, setImages] = useState<Image[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [endDate, setEndDate] = useState<Date>(new Date());
-    let startDateTmp = new Date(endDate);
-    startDateTmp.setMonth(startDateTmp.getMonth() - 1);
-    const [startDate, setStartDate] = useState<Date>(startDateTmp);
+    var endDate = new Date();
+    var startDate = new Date(endDate);
+    startDate.setMonth(startDate.getMonth() - 1);
+    const [filterImage, setFilterImage] = useState<boolean>(false);
+    const [minDate, setMinDate] = useState<Date>(MIN_DATE);
+    const [maxDate, setMaxDate] = useState<Date>(new Date());
+    const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+    const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    var stillImagesToLoad: boolean = true;
 
     const router = useRouter();
 
     const getImages = async () => {
+        console.log("getImages");
+        console.log(startDate, endDate);
+        if (!stillImagesToLoad) {
+            return;
+        }
         setLoading(true);
         try {
             const newImages = await new GetImagesOnDateRange(
@@ -35,21 +55,42 @@ export default function ImageList() {
         } catch (err) {
             setError("Error loading images");
         } finally {
+            if (
+                startDate.getDate() === minDate.getDate() &&
+                startDate.getMonth() === minDate.getMonth() &&
+                startDate.getFullYear() === minDate.getFullYear()
+            ) {
+                stillImagesToLoad = false;
+            }
             setLoading(false);
         }
     };
 
+    const reloadImages = () => {
+        console.log("Reloading images");
+        setImages([]); // Reset the images array
+        endDate = new Date(maxDate);
+        startDate = new Date(maxDate);
+        startDate.setMonth(startDate.getMonth() - 1);
+        if (startDate < minDate) {
+            startDate = new Date(minDate);
+        }
+        stillImagesToLoad = true;
+        getImages(); // Fetch new images
+    };
+
     useEffect(() => {
-        getImages();
+        reloadImages();
     }, []);
 
     const handleLoadMore = () => {
+        if (loading) return;
+        console.log("handleLoadMore");
+        endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() - 1);
-        endDate.setMonth(endDate.getMonth() - 1);
-        startDate.setDate(endDate.getDate());
+
+        startDate = new Date(endDate);
         startDate.setMonth(startDate.getMonth() - 1);
-        setStartDate(startDate);
-        setEndDate(endDate);
 
         getImages();
     };
@@ -59,6 +100,71 @@ export default function ImageList() {
             pathname: "/image-details",
             params: { date: image.date.toISOString() },
         });
+    };
+
+    const onChangeStartDate = (
+        event: DateTimePickerEvent,
+        selectedDate: Date | undefined
+    ) => {
+        let currentDate = selectedDate || startDate;
+        if (currentDate > new Date()) {
+            currentDate = new Date();
+        }
+        if (currentDate > maxDate) {
+            setMaxDate(currentDate);
+        }
+        setMinDate(currentDate);
+        setShowStartDatePicker(false);
+        reloadImages();
+    };
+
+    const onChangeEndDate = (
+        event: DateTimePickerEvent,
+        selectedDate: Date | undefined
+    ) => {
+        let currentDate: Date = selectedDate || endDate;
+        if (currentDate > new Date()) {
+            currentDate = new Date();
+        }
+        if (currentDate < minDate) {
+            setMinDate(currentDate);
+        }
+        setMaxDate(currentDate);
+        setShowEndDatePicker(false);
+        reloadImages();
+    };
+
+    const DatePickers = () => {
+        return (
+            <View>
+                <Text>Start Date:</Text>
+                <Button onPress={() => setShowStartDatePicker(true)}>
+                    {DateFormatter.formatDate(minDate)}
+                </Button>
+                {showStartDatePicker && (
+                    <DateTimePicker
+                        testID="startDatePicker"
+                        value={minDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChangeStartDate}
+                    />
+                )}
+                <Text>End Date:</Text>
+                <Button onPress={() => setShowEndDatePicker(true)}>
+                    {DateFormatter.formatDate(maxDate)}
+                </Button>
+                {showEndDatePicker && (
+                    <DateTimePicker
+                        testID="endDatePicker"
+                        value={maxDate}
+                        mode="date"
+                        display="default"
+                        onChange={onChangeEndDate}
+                    />
+                )}
+            </View>
+        );
     };
 
     const renderItem = ({ item }: { item: Image }) => (
@@ -80,6 +186,15 @@ export default function ImageList() {
                 backgroundColor: theme.colors.background,
             }}
         >
+            <Switch
+                value={filterImage}
+                onValueChange={(value) => {
+                    console.log(value);
+                    setFilterImage(value);
+                    reloadImages();
+                }}
+            />
+            {filterImage && <DatePickers />}
             <FlatList
                 data={images}
                 renderItem={renderItem}

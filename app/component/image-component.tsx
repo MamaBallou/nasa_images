@@ -78,7 +78,7 @@ const ImageDetails = ({ image }: { image: Image }) => {
             </Text>
             <View>
                 <Text selectable style={styles.copyright}>
-                    Copyright: {image.copyright.trim() || "N/A"}
+                    Copyright: {image.copyright?.trim() || "N/A"}
                 </Text>
                 <Text selectable style={styles.mediaType}>
                     Media Type: {image.media_type}
