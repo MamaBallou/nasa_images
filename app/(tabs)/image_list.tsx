@@ -124,6 +124,9 @@ export default function ImageList() {
             currentDate = new Date();
         }
         if (currentDate > maxDate) {
+            maxDate.setDate(currentDate.getDate());
+            maxDate.setMonth(currentDate.getMonth());
+            maxDate.setFullYear(currentDate.getFullYear());
             setMaxDate(currentDate);
         }
         minDate.setDate(currentDate.getDate());
@@ -143,8 +146,14 @@ export default function ImageList() {
             currentDate = new Date();
         }
         if (currentDate < minDate) {
+            minDate.setDate(currentDate.getDate());
+            minDate.setMonth(currentDate.getMonth());
+            minDate.setFullYear(currentDate.getFullYear());
             setMinDate(currentDate);
         }
+        maxDate.setDate(currentDate.getDate());
+        maxDate.setMonth(currentDate.getMonth());
+        maxDate.setFullYear(currentDate.getFullYear());
         setMaxDate(currentDate);
         setShowEndDatePicker(false);
         reloadImages();
